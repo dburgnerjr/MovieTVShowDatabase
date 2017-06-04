@@ -7,19 +7,15 @@ package com.dburgnerjr.movietvshowdatabase.features.movies
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dburgnerjr.movietvshowdatabase.R
 import com.dburgnerjr.movietvshowdatabase.commons.inflate
+import com.dburgnerjr.movietvshowdatabase.features.movies.adapter.MovieAdapter
 import kotlinx.android.synthetic.main.movie_fragment.*
 
 class MovieFragment : Fragment() {
-
-    private val movieList by lazy {
-        movie_list
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return container?.inflate(R.layout.movie_fragment)
@@ -28,7 +24,15 @@ class MovieFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        movieList.setHasFixedSize(true)
-        movieList.layoutManager = LinearLayoutManager(context)
+        movie_list.setHasFixedSize(true)
+        movie_list.layoutManager = LinearLayoutManager(context)
+
+        initAdapter()
+    }
+
+    private fun initAdapter() {
+        if (movie_list.adapter == null) {
+            movie_list.adapter = MovieAdapter()
+        }
     }
 }
