@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import com.dburgnerjr.movietvshowdatabase.features.movies.MovieFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,6 +14,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+
+        if (savedInstanceState == null) {
+            changeFragment(MovieFragment())
+        }
     }
 
     fun changeFragment(f: Fragment, bCleanStack: Boolean = false) {
@@ -29,8 +34,19 @@ class MainActivity : AppCompatActivity() {
 
     fun clearBackStack() {
         val mgr = supportFragmentManager;
-        if (mgr.backStackEntryCount > 1) {
-            mgr.popBackStack();
+        if (mgr.backStackEntryCount > 0) {
+            val firstEntry = mgr.getBackStackEntryAt(0);
+            mgr.popBackStack(firstEntry.id, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+    /**
+     * Finish activity when reaching the last fragment.
+     */
+    override fun onBackPressed() {
+        val fragmentMgr = supportFragmentManager;
+        if (fragmentMgr.backStackEntryCount > 1) {
+            fragmentMgr.popBackStack();
         } else {
             finish();
         }
