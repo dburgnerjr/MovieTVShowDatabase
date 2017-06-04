@@ -6,6 +6,7 @@ package com.dburgnerjr.movietvshowdatabase.features.movies.adapter
 import android.support.v4.util.SparseArrayCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.dburgnerjr.movietvshowdatabase.commons.Movie
 import com.dburgnerjr.movietvshowdatabase.commons.adapter.AdapterConstants
 import com.dburgnerjr.movietvshowdatabase.commons.adapter.ViewType
 import com.dburgnerjr.movietvshowdatabase.commons.adapter.ViewTypeDelegateAdapter
@@ -21,6 +22,7 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     init {
         delegateAdapters.put(AdapterConstants.LOADING, LoadingDelegateAdapter())
+        delegateAdapters.put(AdapterConstants.MOVIE, MovieDelegateAdapter())
         items = ArrayList()
         items.add(loadingItem)
     }
@@ -40,4 +42,33 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return this.items.get(position).getViewType()
     }
+
+    fun addMovie(movie: List<Movie>) {
+        // first remove loading and notify
+        val initPosition = items.size - 1
+        items.removeAt(initPosition)
+        notifyItemRemoved(initPosition)
+
+        // insert movie and the loading at the end of the list
+        items.addAll(movie)
+        items.add(loadingItem)
+        notifyItemRangeChanged(initPosition, items.size + 1)
+    }
+
+    fun clearAndAddMovie(movie: List<Movie>) {
+        items.clear()
+        notifyItemRangeRemoved(0, getLastPosition())
+
+        items.addAll(movie)
+        items.add(loadingItem)
+        notifyItemRangeChanged(0, items.size)
+    }
+
+    fun getMovies(): List<Movie> {
+        return items
+                .filter { it.getViewType() == AdapterConstants.MOVIE }
+                .map { it as Movie }
+    }
+
+    private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
 }

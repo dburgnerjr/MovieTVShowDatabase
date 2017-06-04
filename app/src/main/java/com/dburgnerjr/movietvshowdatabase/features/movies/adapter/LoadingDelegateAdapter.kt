@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.dburgnerjr.movietvshowdatabase.commons.adapter.ViewType
 import com.dburgnerjr.movietvshowdatabase.commons.adapter.ViewTypeDelegateAdapter
 import com.dburgnerjr.movietvshowdatabase.R
-import com.dburgnerjr.movietvshowdatabase.commons.inflate
+import com.dburgnerjr.movietvshowdatabase.commons.extensions.inflate
 
 class LoadingDelegateAdapter : ViewTypeDelegateAdapter {
 

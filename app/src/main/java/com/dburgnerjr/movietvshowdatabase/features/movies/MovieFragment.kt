@@ -11,7 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dburgnerjr.movietvshowdatabase.R
-import com.dburgnerjr.movietvshowdatabase.commons.inflate
+import com.dburgnerjr.movietvshowdatabase.commons.Movie
+import com.dburgnerjr.movietvshowdatabase.commons.extensions.inflate
 import com.dburgnerjr.movietvshowdatabase.features.movies.adapter.MovieAdapter
 import kotlinx.android.synthetic.main.movie_fragment.*
 
@@ -26,8 +27,20 @@ class MovieFragment : Fragment() {
 
         movie_list.setHasFixedSize(true)
         movie_list.layoutManager = LinearLayoutManager(context)
-
         initAdapter()
+
+        if (savedInstanceState == null) {
+            val movie = mutableListOf<Movie>()
+            for (nI in 1..10) {
+                movie.add(Movie(
+                        "Title",
+                        "http://lorempixel.com/200/200/technics/$nI",
+                        "Description",
+                        "Backdrop"
+                ))
+            }
+            (movie_list.adapter as MovieAdapter).addMovie(movie)
+        }
     }
 
     private fun initAdapter() {

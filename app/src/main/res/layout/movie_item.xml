@@ -31,10 +31,10 @@
         android:typeface="sans"
         tools:text="This should be a long description like this example I'm showing."/>
 
-    <!-- Author -->
+    <!-- Title -->
 
     <TextView
-        android:id="@+id/author"
+        android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/description"
@@ -45,14 +45,14 @@
         tools:ignore="SmallSp"
         tools:text="Author 123"/>
 
-    <!-- Comments -->
+    <!-- Backdrop -->
 
     <TextView
-        android:id="@+id/comments"
+        android:id="@+id/backdrop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/author"
-        android:layout_alignRight="@+id/author"
+        android:layout_alignEnd="@+id/title"
+        android:layout_alignRight="@+id/title"
         android:layout_below="@+id/description"
         android:gravity="right"
         android:textColor="#10bcc9"
@@ -60,19 +60,5 @@
         android:textStyle="bold"
         tools:ignore="SmallSp"
         tools:text="30012 comments"/>
-
-    <!-- Time -->
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/author"
-        android:layout_alignStart="@+id/author"
-        android:layout_below="@+id/author"
-        android:textColor="#343434"
-        android:textSize="10sp"
-        tools:ignore="SmallSp"
-        tools:text="12 hours ago"/>
 
 </RelativeLayout>
