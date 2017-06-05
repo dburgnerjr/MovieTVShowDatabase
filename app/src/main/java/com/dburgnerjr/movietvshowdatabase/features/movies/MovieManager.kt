@@ -3,30 +3,34 @@ package com.dburgnerjr.movietvshowdatabase.features.movies
 /**
  * Created by dburgnerjr on 6/4/17.
  */
+import com.dburgnerjr.movietvshowdatabase.api.RestAPI
 import com.dburgnerjr.movietvshowdatabase.commons.Movie
 import rx.Observable
+import rx.Observable.create
 
 /**
  * Movie Manager allows you to request more movies and TV shows from the Movie Database API
  *
  * @author dburgnerjr
  */
-class MovieManager() {
+class MovieManager(private val api: RestAPI = RestAPI()) {
 
     fun getMovie(): Observable<List<Movie>> {
-        return Observable.create {
+        return create {
             subscriber ->
+            val callResponse = api.getMovie()
+            val response = callResponse.execute()
 
-            val movie = mutableListOf<Movie>()
-            for (nI in 1..10) {
-                movie.add(Movie(
-                        "Title",
-                        "http://lorempixel.com/200/200/technics/$nI",
-                        "Description",
-                        "Backdrop"
-                ))
+            if (response.isSuccessful) {
+                val movie = response.body().data.children.map {
+                    val item = it.data
+                    Movie(item.title, item.poster, item.description, item.backdrop)
+                }
+                subscriber.onNext(movie)
+                subscriber.onCompleted()
+            } else {
+                subscriber.onError(Throwable(response.message()))
             }
-            subscriber.onNext(movie)
         }
     }
 }
