@@ -11,7 +11,7 @@ import com.danielburgnerjr.movietvshowdatabase.commons.adapter.ViewType
 import com.danielburgnerjr.movietvshowdatabase.commons.adapter.ViewTypeDelegateAdapter
 import com.danielburgnerjr.movietvshowdatabase.commons.extensions.inflate
 import com.danielburgnerjr.movietvshowdatabase.commons.extensions.loadImg
-import kotlinx.android.synthetic.main.movie_item.view.*
+import kotlinx.android.synthetic.main.content_movie.view.*
 
 class MovieDelegateAdapter : ViewTypeDelegateAdapter {
 
@@ -25,11 +25,13 @@ class MovieDelegateAdapter : ViewTypeDelegateAdapter {
     }
 
     class TurnsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-            parent.inflate(R.layout.movie_item)) {
+            parent.inflate(R.layout.content_movie)) {
 
         fun bind(item: Movie) = with(itemView) {
-            img_thumbnail.loadImg(item.strPoster)
-            description.text = item.strDescription
+            movie_poster.loadImg(item.strPoster)
+            movie_description.text = item.strDescription
+            release_date.text = item.strReleaseDate
+            rating.rating = item.dUserRating.toFloat()
             title.text = item.strTitle
             backdrop.text = item.strBackdrop
         }

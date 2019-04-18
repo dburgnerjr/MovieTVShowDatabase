@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main"
-    tools:context="com.danielburgnerjr.movietvdb.MainActivity">
+    tools:context="com.danielburgnerjr.movietvshowdatabase.MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvRecyclerView"

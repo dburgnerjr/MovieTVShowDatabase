@@ -3,4 +3,6 @@
     <color name="colorPrimary">#acb7f2</color>
     <color name="colorPrimaryDark">#4a559b</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="favoritesBackground">#FF0000</color>
+    <color name="favoritesTextColor">#FFFFFF</color>
 </resources>
