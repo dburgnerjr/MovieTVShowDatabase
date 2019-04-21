@@ -32,7 +32,7 @@ import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
 
-import com.danielburgnerjr.movietvshowdatabase.commons.Movie
+import com.danielburgnerjr.movietvshowdatabase.model.Movie
 //import com.danielburgnerjr.movietvdb.data.MovieTVDBContract
 //import com.danielburgnerjr.movietvdb.data.MovieTVDbHelper
 import com.squareup.picasso.Picasso
@@ -119,7 +119,7 @@ class MovieDetailActivity : AppCompatActivity()
         setSupportActionBar(tbToolbar)
         val ctlToolbarLayout = findViewById<View>(R.id.toolbar_layout) as CollapsingToolbarLayout
 //        if (getIntent().hasExtra(EXTRA_MOVIE)) {
-            ctlToolbarLayout.title = mMovie!!.getTitle()
+            ctlToolbarLayout.title = mMovie!!.title
 /*
         } else if (getIntent().hasExtra(EXTRA_TV)) {
             ctlToolbarLayout.title = tTV!!.getTitle()
@@ -133,13 +133,13 @@ class MovieDetailActivity : AppCompatActivity()
 
         //ButterKnife.bind(this)
 
-        if (getIntent().hasExtra(EXTRA_MOVIE)) {
-            strDescription = mMovie!!.getDescription()
+        //if (getIntent().hasExtra(EXTRA_MOVIE)) {
+            strDescription = mMovie!!.description
             tvReleaseDateHeading?.text = "Release Date"
-            strReleaseDate = mMovie!!.getReleaseDate()
-            dUserRating = mMovie!!.getUserRating()
-            strPoster = mMovie!!.getPoster()
-            strBackdrop = mMovie!!.getBackdrop()
+            strReleaseDate = mMovie!!.releaseDate
+            dUserRating = mMovie!!.userRating
+            strPoster = mMovie!!.poster
+            strBackdrop = mMovie!!.backdrop
 /*
             if (!mMovie!!.isFavorite()) {
                 mFavoriteButton.setText(R.string.favorite)

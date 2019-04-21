@@ -22,9 +22,9 @@ import android.widget.Toast
 
 //import butterknife.ButterKnife
 
-import com.danielburgnerjr.movietvshowdatabase.api.TMDBAPI
-import com.danielburgnerjr.movietvshowdatabase.api.TMDBMovieResponse
-import com.danielburgnerjr.movietvshowdatabase.commons.Movie
+import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
+import com.danielburgnerjr.movietvshowdatabase.model.Movie
+import com.danielburgnerjr.movietvshowdatabase.adapter.MovieAdapter
 //import com.danielburgnerjr.movietvdb.data.MovieTVDBContract
 //import com.danielburgnerjr.movietvdb.data.MovieTVDbHelper
 import com.squareup.picasso.Picasso
@@ -123,10 +123,10 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<TMDBAPI>(TMDBAPI::class.java!!)
-        mtaService.getPopularMovies(object : Callback<TMDBMovieResponse> {
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        mtaService.getPopularMovies(object : Callback<Movie.MovieResult> {      // KotlinNPE occurs here
             override fun success(movieResult: Movie.MovieResult, response: Response) {
-                mMovieAdapter!!.setMovieList(movieResult.getResults())
+                mMovieAdapter!!.setMovieList(movieResult.results)               // KotlinNPE occurs here as well
             }
 
             override fun failure(error: RetrofitError) {
