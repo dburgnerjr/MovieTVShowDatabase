@@ -22,6 +22,6 @@ class TMDBMovieDataResponse(
         @SerializedName("overview") val strDescription: String,
         @SerializedName("backdrop_path") val strBackdrop: String,
         @SerializedName("release_date") val strReleaseDate: String,
-        @SerializedName("vote_average") val dUserRating: Double
+        @SerializedName("vote_average") val dUserRating: Double,
         val isFavorite: Boolean
 )
