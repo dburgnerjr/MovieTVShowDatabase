@@ -17,6 +17,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MovieDetailActivity"
+            android:label="MovieDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <provider
+            android:name=".data.MovieTVDBContentProvider"
+            android:authorities="com.danielburgnerjr.movietvshowdatabase"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>
