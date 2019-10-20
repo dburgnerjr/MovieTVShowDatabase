@@ -20,13 +20,13 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 
-//import butterknife.ButterKnife
+import butterknife.ButterKnife
 
 import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
 import com.danielburgnerjr.movietvshowdatabase.model.Movie
 import com.danielburgnerjr.movietvshowdatabase.adapter.MovieAdapter
-//import com.danielburgnerjr.movietvdb.data.MovieTVDBContract
-//import com.danielburgnerjr.movietvdb.data.MovieTVDbHelper
+import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
+import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
 import com.squareup.picasso.Picasso
 
 import java.util.ArrayList
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     internal var spnMenuOptions: Spinner? = null
     private var mMovieAdapter: MovieAdapter? = null
     //private var mTVAdapter: TVAdapter? = null
-    //private var mDb: SQLiteDatabase? = null
+    private var mDb: SQLiteDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,18 +50,16 @@ class MainActivity : AppCompatActivity() {
         rvRecyclerView = findViewById<View>(R.id.rvRecyclerView) as RecyclerView
         spnMenuOptions = findViewById<View>(R.id.spnMenuOptions) as Spinner
 
-/*
-        val mtDbHelper = MovieTVDbHelper(this)
+        val mtDbHelper = MovieTVShowDatabaseHelper(this)
         mDb = mtDbHelper.getWritableDatabase()
-*/
 
-        //ButterKnife.bind(this)
+        ButterKnife.bind(this)
         rvRecyclerView?.setHasFixedSize(true)
         rvRecyclerView?.layoutManager = GridLayoutManager(this, 2)
         rvRecyclerView?.layoutManager!!.isMeasurementCacheEnabled = false
-        //mMovieAdapter = MovieAdapter(this)
+        mMovieAdapter = MovieAdapter(this)
         //mTVAdapter = TVAdapter(this)
-        //rvRecyclerView.adapter = mMovieAdapter
+        rvRecyclerView?.adapter = mMovieAdapter
         getPopularMovies()
 
         val strOptions = resources.getStringArray(R.array.sort_options)
