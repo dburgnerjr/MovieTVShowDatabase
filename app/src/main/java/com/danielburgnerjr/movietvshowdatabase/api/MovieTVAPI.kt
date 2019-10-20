@@ -12,7 +12,6 @@ import retrofit.http.Path
 interface MovieTVAPI {
     @GET("/movie/popular")
     fun getPopularMovies(cb: Callback<Movie.MovieResult>)
-/*
 
     @GET("/movie/top_rated")
     fun getTopRatedMovies(cb: Callback<Movie.MovieResult>)
@@ -22,7 +21,7 @@ interface MovieTVAPI {
 
     @GET("/movie/upcoming")
     fun getUpcomingMovies(cb: Callback<Movie.MovieResult>)
-
+/*
     @GET("/movie/{id}/videos")
     fun getMovieVideos(@Path("id") movieId: Long, cb: Callback<Video.VideoResult>)
 

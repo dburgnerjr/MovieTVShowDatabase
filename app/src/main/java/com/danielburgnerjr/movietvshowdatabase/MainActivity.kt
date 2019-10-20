@@ -25,6 +25,7 @@ import butterknife.ButterKnife
 import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
 import com.danielburgnerjr.movietvshowdatabase.model.Movie
 import com.danielburgnerjr.movietvshowdatabase.adapter.MovieAdapter
+//import com.danielburgnerjr.movietvshowdatabase.adapter.TVAdapter
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
 import com.squareup.picasso.Picasso
@@ -76,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                         rvRecyclerView?.adapter = mMovieAdapter
                         getPopularMovies()
                     }
-/*
                     1 -> {
                         rvRecyclerView?.adapter = mMovieAdapter
                         getTopRatedMovies()
@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                         rvRecyclerView?.adapter = mMovieAdapter
                         getFavoriteMovies()
                     }
+/*
                     5 -> {
                         rvRecyclerView?.adapter = mTVAdapter
                         getPopularTVShows()
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                         rvRecyclerView?.adapter = mTVAdapter
                         getFavoriteTVShows()
                     }
-*/
+ */
                 }
             }
 
@@ -122,9 +123,9 @@ class MainActivity : AppCompatActivity() {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
         val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
-        mtaService.getPopularMovies(object : Callback<Movie.MovieResult> {      // KotlinNPE occurs here
+        mtaService.getPopularMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
-                mMovieAdapter!!.setMovieList(movieResult.results)               // KotlinNPE occurs here as well
+                mMovieAdapter!!.setMovieList(movieResult.results)
             }
 
             override fun failure(error: RetrofitError) {
@@ -133,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-/*
+
     private fun getTopRatedMovies() {
         val raAdapter = RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
         mtaService.getTopRatedMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
-                mMovieAdapter!!.setMovieList(movieResult.getResults())
+                mMovieAdapter!!.setMovieList(movieResult.results)
             }
 
             override fun failure(error: RetrofitError) {
@@ -161,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
         mtaService.getNowPlayingMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
-                mMovieAdapter!!.setMovieList(movieResult.getResults())
+                mMovieAdapter!!.setMovieList(movieResult.results)
             }
 
             override fun failure(error: RetrofitError) {
@@ -179,7 +180,7 @@ class MainActivity : AppCompatActivity() {
         val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
         mtaService.getUpcomingMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
-                mMovieAdapter!!.setMovieList(movieResult.getResults())
+                mMovieAdapter!!.setMovieList(movieResult.results)
             }
 
             override fun failure(error: RetrofitError) {
@@ -187,30 +188,30 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-*/
 
-/*
+
+
     private fun getFavoriteMovies() {
-        val cursor = mDb!!.query(MovieTVDBContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
-                MovieTVDBContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)
+        val cursor = mDb!!.query(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
+                MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)
 
         //TODO Build the movie list from the stored Ids
         val result = ArrayList<Movie>()
 
         try {
             while (cursor.moveToNext()) {
-                val id = cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_ID))
+                val id = cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID))
 
                 val movC = Movie(
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_ID)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_OVERVIEW)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_POSTERPATH)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_BACKDROP)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_RELEASEDATE)),
-                        cursor.getDouble(cursor.getColumnIndex(MovieTVDBContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_OVERVIEW)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_POSTERPATH)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_BACKDROP)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE)),
+                        cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)),
                         true)
-                println(movC.getPoster() + " " + movC.getBackdrop())
+                println(movC.poster + " " + movC.backdrop)
                 result.add(movC)
             }
         } finally {
@@ -218,8 +219,6 @@ class MainActivity : AppCompatActivity() {
         }
         mMovieAdapter!!.setMovieList(result)
     }
-*/
-
 /*
     private fun getPopularTVShows() {
         val raAdapter = RestAdapter.Builder()
@@ -256,9 +255,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-*/
 
-/*
     private fun getFavoriteTVShows() {
         val cursor = mDb!!.query(MovieTVDBContract.TVEntry.TABLE_NAME, null, null, null, null, null,
                 MovieTVDBContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)
@@ -288,7 +285,6 @@ class MainActivity : AppCompatActivity() {
         mTVAdapter!!.setTVList(result)
     }
 */
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val layoutManager = rvRecyclerView?.layoutManager as GridLayoutManager?
