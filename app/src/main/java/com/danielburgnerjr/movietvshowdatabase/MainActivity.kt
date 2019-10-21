@@ -22,12 +22,17 @@ import android.widget.Toast
 
 import butterknife.ButterKnife
 
-import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
-import com.danielburgnerjr.movietvshowdatabase.model.Movie
 import com.danielburgnerjr.movietvshowdatabase.adapter.MovieAdapter
-//import com.danielburgnerjr.movietvshowdatabase.adapter.TVAdapter
+import com.danielburgnerjr.movietvshowdatabase.adapter.TVAdapter
+
+import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
+
+import com.danielburgnerjr.movietvshowdatabase.model.Movie
+import com.danielburgnerjr.movietvshowdatabase.model.TV
+
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
+
 import com.squareup.picasso.Picasso
 
 import java.util.ArrayList
@@ -42,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     internal var rvRecyclerView: RecyclerView? = null
     internal var spnMenuOptions: Spinner? = null
     private var mMovieAdapter: MovieAdapter? = null
-    //private var mTVAdapter: TVAdapter? = null
+    private var mTVAdapter: TVAdapter? = null
     private var mDb: SQLiteDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         rvRecyclerView?.layoutManager = GridLayoutManager(this, 2)
         rvRecyclerView?.layoutManager!!.isMeasurementCacheEnabled = false
         mMovieAdapter = MovieAdapter(this)
-        //mTVAdapter = TVAdapter(this)
+        mTVAdapter = TVAdapter(this)
         rvRecyclerView?.adapter = mMovieAdapter
         getPopularMovies()
 
@@ -93,7 +98,6 @@ class MainActivity : AppCompatActivity() {
                         rvRecyclerView?.adapter = mMovieAdapter
                         getFavoriteMovies()
                     }
-/*
                     5 -> {
                         rvRecyclerView?.adapter = mTVAdapter
                         getPopularTVShows()
@@ -106,7 +110,6 @@ class MainActivity : AppCompatActivity() {
                         rvRecyclerView?.adapter = mTVAdapter
                         getFavoriteTVShows()
                     }
- */
                 }
             }
 
@@ -133,7 +136,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 
     private fun getTopRatedMovies() {
         val raAdapter = RestAdapter.Builder()
@@ -189,8 +191,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
-
     private fun getFavoriteMovies() {
         val cursor = mDb!!.query(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
                 MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)
@@ -219,7 +219,7 @@ class MainActivity : AppCompatActivity() {
         }
         mMovieAdapter!!.setMovieList(result)
     }
-/*
+
     private fun getPopularTVShows() {
         val raAdapter = RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity() {
         val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
         mtaService.getPopularTVShows(object : Callback<TV.TVResult> {
             override fun success(tvResult: TV.TVResult, response: Response) {
-                mTVAdapter!!.setTVList(tvResult.getResults())
+                mTVAdapter!!.setTVList(tvResult.results)
             }
 
             override fun failure(error: RetrofitError) {
@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity() {
         val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
         mtaService.getTopRatedTVShows(object : Callback<TV.TVResult> {
             override fun success(tvResult: TV.TVResult, response: Response) {
-                mTVAdapter!!.setTVList(tvResult.getResults())
+                mTVAdapter!!.setTVList(tvResult.results)
             }
 
             override fun failure(error: RetrofitError) {
@@ -257,26 +257,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFavoriteTVShows() {
-        val cursor = mDb!!.query(MovieTVDBContract.TVEntry.TABLE_NAME, null, null, null, null, null,
-                MovieTVDBContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)
+        val cursor = mDb!!.query(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, null, null, null, null,
+                MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)
 
         //TODO Build the TV list from the stored Ids
         val result = ArrayList<TV>()
 
         try {
             while (cursor.moveToNext()) {
-                val id = cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_ID))
+                val id = cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID))
 
                 val tvC = TV(
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_ID)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_ORIGINALTITLE)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_OVERVIEW)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_POSTERPATH)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_BACKDROP)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_RELEASEDATE)),
-                        cursor.getDouble(cursor.getColumnIndex(MovieTVDBContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_OVERVIEW)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_POSTERPATH)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_BACKDROP)),
+                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE)),
+                        cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)),
                         true)
-                println(tvC.getPoster() + " " + tvC.getBackdrop())
+                println(tvC.poster + " " + tvC.backdrop)
                 result.add(tvC)
             }
         } finally {
@@ -284,7 +284,7 @@ class MainActivity : AppCompatActivity() {
         }
         mTVAdapter!!.setTVList(result)
     }
-*/
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val layoutManager = rvRecyclerView?.layoutManager as GridLayoutManager?

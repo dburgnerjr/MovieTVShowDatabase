@@ -23,7 +23,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 
-//import butterknife.ButterKnife
+import butterknife.ButterKnife
 import java.util.ArrayList
 
 import retrofit.Callback
@@ -33,8 +33,9 @@ import retrofit.RetrofitError
 import retrofit.client.Response
 
 import com.danielburgnerjr.movietvshowdatabase.model.Movie
-//import com.danielburgnerjr.movietvdb.data.MovieTVDBContract
-//import com.danielburgnerjr.movietvdb.data.MovieTVDbHelper
+import com.danielburgnerjr.movietvshowdatabase.model.TV
+import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
+import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
 import com.squareup.picasso.Picasso
 
 /**
@@ -46,7 +47,7 @@ class MovieDetailActivity : AppCompatActivity()
  {
 
     private var mMovie: Movie? = null
-    //private var tTV: TV? = null
+    private var tTV: TV? = null
     //private var mVideoAdapter: VideoAdapter? = null
     //private var mReviewAdapter: ReviewAdapter? = null
     //private var mDb: SQLiteDatabase? = null
@@ -84,9 +85,9 @@ class MovieDetailActivity : AppCompatActivity()
         //rvVideoList = findViewById(R.id.video_list) as RecyclerView
         tvReviewsHeading = findViewById<View>(R.id.reviews_heading) as TextView
         //rvReviews = findViewById(R.id.reviews) as RecyclerView
-        //mFavoriteButton = findViewById(R.id.favorite_button) as Button
+        mFavoriteButton = findViewById(R.id.favorite_button) as Button
 
-/*
+
         val intent = intent
         if (intent == null) {
             closeOnError("Intent is null")
@@ -113,56 +114,51 @@ class MovieDetailActivity : AppCompatActivity()
         } else {
             throw IllegalArgumentException("Detail activity must receive a movie or TV parcelable")
         }
-*/
 
         val tbToolbar = findViewById<View>(R.id.tbToolbar) as Toolbar
         setSupportActionBar(tbToolbar)
         val ctlToolbarLayout = findViewById<View>(R.id.toolbar_layout) as CollapsingToolbarLayout
-//        if (getIntent().hasExtra(EXTRA_MOVIE)) {
+        if (getIntent().hasExtra(EXTRA_MOVIE)) {
             ctlToolbarLayout.title = mMovie!!.title
-/*
         } else if (getIntent().hasExtra(EXTRA_TV)) {
-            ctlToolbarLayout.title = tTV!!.getTitle()
+            ctlToolbarLayout.title = tTV!!.title
         }
-*/
+
         ctlToolbarLayout.setExpandedTitleColor(Color.WHITE)
         ctlToolbarLayout.setCollapsedTitleTextColor(Color.WHITE)
 
         val llMovieLayout = LinearLayout(applicationContext)
         llMovieLayout.orientation = LinearLayout.HORIZONTAL
 
-        //ButterKnife.bind(this)
+        ButterKnife.bind(this)
 
-        //if (getIntent().hasExtra(EXTRA_MOVIE)) {
+        if (getIntent().hasExtra(EXTRA_MOVIE)) {
             strDescription = mMovie!!.description
             tvReleaseDateHeading?.text = "Release Date"
             strReleaseDate = mMovie!!.releaseDate
             dUserRating = mMovie!!.userRating
             strPoster = mMovie!!.poster
             strBackdrop = mMovie!!.backdrop
-/*
-            if (!mMovie!!.isFavorite()) {
-                mFavoriteButton.setText(R.string.favorite)
+
+            if (!mMovie!!.isFavorite) {
+                mFavoriteButton!!.setText(R.string.favorite)
             } else {
-                mFavoriteButton.setText(R.string.unfavorite)
+                mFavoriteButton!!.setText(R.string.unfavorite)
             }
-*/
-/*
         } else if (getIntent().hasExtra(EXTRA_TV)) {
-            strDescription = tTV!!.getDescription()
+            strDescription = tTV!!.description
             tvReleaseDateHeading?.text = "First Air Date"
-            strReleaseDate = tTV!!.getReleaseDate()
-            dUserRating = tTV!!.getUserRating()
-            strPoster = tTV!!.getPoster()
-            strBackdrop = tTV!!.getBackdrop()
-            if (!tTV!!.isFavorite()) {
-                mFavoriteButton.setText(R.string.favorite)
+            strReleaseDate = tTV!!.releaseDate
+            dUserRating = tTV!!.userRating
+            strPoster = tTV!!.poster
+            strBackdrop = tTV!!.backdrop
+            if (!tTV!!.isFavorite) {
+                mFavoriteButton!!.setText(R.string.favorite)
             } else {
-                mFavoriteButton.setText(R.string.unfavorite)
+                mFavoriteButton!!.setText(R.string.unfavorite)
             }
 
         }
-*/
 
         tvDescription?.text = strDescription
         tvReleaseDate?.text = strReleaseDate
