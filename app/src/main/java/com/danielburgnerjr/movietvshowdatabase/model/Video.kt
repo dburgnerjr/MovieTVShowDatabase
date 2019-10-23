@@ -10,21 +10,21 @@ import java.util.ArrayList
 class Video : Parcelable {
 
     @SerializedName("id")
-    var strID: String? = null
+    var strID: String? = ""
 
     @SerializedName("key")
-    var key: String? = null
+    var key: String? = ""
 
     @SerializedName("name")
-    var name: String? = null
+    var name: String? = ""
 
     @SerializedName("site")
-    var strSite: String? = null
+    var strSite: String? = ""
 
     @SerializedName("size")
-    var strSize: String? = null
+    var strSize: String? = ""
 
-    var videoUrl: String? = "http://www.youtube.com/watch?v=" + key!!
+    var videoUrl: String = "http://www.youtube.com/watch?v=" + key!!
 
     constructor() {}
 
@@ -67,14 +67,8 @@ class Video : Parcelable {
 
         @JvmField
         val CREATOR: Parcelable.Creator<Video> = object : Parcelable.Creator<Video> {
-            override fun createFromParcel(source: Parcel): Video {
-                val video = Video()
-                video.strID = source.readString()
-                video.key = source.readString()
-                video.name = source.readString()
-                video.strSite = source.readString()
-                video.strSize = source.readString()
-                return video
+            override fun createFromParcel(`in`: Parcel): Video {
+                return Video(`in`)
             }
 
             override fun newArray(size: Int): Array<Video?> {

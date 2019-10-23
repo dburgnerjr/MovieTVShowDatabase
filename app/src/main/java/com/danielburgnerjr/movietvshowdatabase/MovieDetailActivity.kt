@@ -32,8 +32,14 @@ import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
 
+import com.danielburgnerjr.movietvshowdatabase.adapter.VideoAdapter
+
+import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
+
 import com.danielburgnerjr.movietvshowdatabase.model.Movie
 import com.danielburgnerjr.movietvshowdatabase.model.TV
+import com.danielburgnerjr.movietvshowdatabase.model.Video
+
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
 import com.squareup.picasso.Picasso
@@ -42,13 +48,12 @@ import com.squareup.picasso.Picasso
  * Created by dburgnerjr on 6/5/17.
  */
 
-class MovieDetailActivity : AppCompatActivity()
-        //, VideoAdapter.Callbacks, ReviewAdapter.Callbacks
+class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, ReviewAdapter.Callbacks
  {
 
     private var mMovie: Movie? = null
     private var tTV: TV? = null
-    //private var mVideoAdapter: VideoAdapter? = null
+    private var mVideoAdapter: VideoAdapter? = null
     //private var mReviewAdapter: ReviewAdapter? = null
     //private var mDb: SQLiteDatabase? = null
 
@@ -82,7 +87,7 @@ class MovieDetailActivity : AppCompatActivity()
         tvReleaseDate = findViewById<View>(R.id.release_date) as TextView
         rbRating = findViewById<View>(R.id.rating) as RatingBar
         tvVideosHeading = findViewById<View>(R.id.videos_heading) as TextView
-        //rvVideoList = findViewById(R.id.video_list) as RecyclerView
+        rvVideoList = findViewById(R.id.video_list) as RecyclerView
         tvReviewsHeading = findViewById<View>(R.id.reviews_heading) as TextView
         //rvReviews = findViewById(R.id.reviews) as RecyclerView
         mFavoriteButton = findViewById(R.id.favorite_button) as Button
@@ -165,12 +170,12 @@ class MovieDetailActivity : AppCompatActivity()
         rbRating?.rating = dUserRating.toFloat()
 
         // For horizontal list of trailers
-/*
+
         val layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
-        rvVideoList.layoutManager = layoutManager
+        rvVideoList!!.layoutManager = layoutManager
         mVideoAdapter = VideoAdapter(ArrayList<Video>(), this)
-        rvVideoList.adapter = mVideoAdapter
-        rvVideoList.isNestedScrollingEnabled = false
+        rvVideoList!!.adapter = mVideoAdapter
+        rvVideoList!!.isNestedScrollingEnabled = false
 
         // Fetch trailers only if savedInstanceState == null
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_VIDEOS)) {
@@ -178,12 +183,12 @@ class MovieDetailActivity : AppCompatActivity()
             mVideoAdapter!!.addVideo(videos)
         } else {
             if (getIntent().hasExtra(EXTRA_MOVIE)) {
-                fetchTrailers(java.lang.Long.parseLong(mMovie!!.getId()))
+                fetchTrailers(mMovie!!.id?.let { java.lang.Long.parseLong(it) })
             } else if (getIntent().hasExtra(EXTRA_TV)) {
-                fetchTrailers(java.lang.Long.parseLong(tTV!!.getId()))
+                fetchTrailers(tTV!!.id?.let { java.lang.Long.parseLong(it) })
             }
         }
-
+/*
         // For vertical list of reviews
         val llmReviews = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         rvReviews.layoutManager = llmReviews
@@ -243,18 +248,18 @@ class MovieDetailActivity : AppCompatActivity()
 
     }
 
-/*
-    private fun fetchTrailers(lMovieId: Long) {
+
+    private fun fetchTrailers(lMovieId: Long?) {
         val raAdapter = RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
                 .setRequestInterceptor { request -> request.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         if (intent.hasExtra(EXTRA_MOVIE)) {
             mtaService.getMovieVideos(lMovieId, object : Callback<Video.VideoResult> {
                 override fun success(videoResult: Video.VideoResult, response: Response) {
-                    mVideoAdapter!!.setVideoList(videoResult.getVideoList())
+                    mVideoAdapter!!.setVideoList(videoResult.videoList)
                 }
 
                 override fun failure(error: RetrofitError) {
@@ -264,7 +269,7 @@ class MovieDetailActivity : AppCompatActivity()
         } else if (intent.hasExtra(EXTRA_TV)) {
             mtaService.getTVVideos(lMovieId, object : Callback<Video.VideoResult> {
                 override fun success(videoResult: Video.VideoResult, response: Response) {
-                    mVideoAdapter!!.setVideoList(videoResult.getVideoList())
+                    mVideoAdapter!!.setVideoList(videoResult.videoList)
                 }
 
                 override fun failure(error: RetrofitError) {
@@ -273,7 +278,7 @@ class MovieDetailActivity : AppCompatActivity()
             })
         }
     }
-
+/*
     private fun fetchReviews(lMovieId: Long) {
         val raAdapter = RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
@@ -349,11 +354,11 @@ class MovieDetailActivity : AppCompatActivity()
 
         }
     }
-
-    fun watch(video: Video, nPosition: Int) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + video.getKey())))
+*/
+    override fun watch(video: Video, nPosition: Int) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + video.key)))
     }
-
+/*
     fun read(review: Review, position: Int) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl())))
     }

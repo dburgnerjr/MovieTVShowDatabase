@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         mtaService.getPopularMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
                 mMovieAdapter!!.setMovieList(movieResult.results)
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         mtaService.getTopRatedMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
                 mMovieAdapter!!.setMovieList(movieResult.results)
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         mtaService.getNowPlayingMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
                 mMovieAdapter!!.setMovieList(movieResult.results)
@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         mtaService.getUpcomingMovies(object : Callback<Movie.MovieResult> {
             override fun success(movieResult: Movie.MovieResult, response: Response) {
                 mMovieAdapter!!.setMovieList(movieResult.results)
@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         mtaService.getPopularTVShows(object : Callback<TV.TVResult> {
             override fun success(tvResult: TV.TVResult, response: Response) {
                 mTVAdapter!!.setTVList(tvResult.results)
@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequestInterceptor { rfRequest -> rfRequest.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         mtaService.getTopRatedTVShows(object : Callback<TV.TVResult> {
             override fun success(tvResult: TV.TVResult, response: Response) {
                 mTVAdapter!!.setTVList(tvResult.results)
@@ -291,7 +291,7 @@ class MainActivity : AppCompatActivity() {
         outState.putInt(CURRENT_RECYCLER_VIEW_POSITION, layoutManager!!.findFirstVisibleItemPosition())
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         if (savedInstanceState != null) {
             val currentPosition = savedInstanceState.getInt(CURRENT_RECYCLER_VIEW_POSITION)

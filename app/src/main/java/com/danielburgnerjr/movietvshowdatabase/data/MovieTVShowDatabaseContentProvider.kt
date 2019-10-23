@@ -93,10 +93,6 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
                     context!!.contentResolver.notifyChange(uri, null)
                 }
                 deletedRecords = moviesDeleted
-                if (tvsDeleted != 0) {
-                    context!!.contentResolver.notifyChange(uri, null)
-                }
-                deletedRecords = tvsDeleted
             }
             TV_ID -> {
                 if (tvsDeleted != 0) {

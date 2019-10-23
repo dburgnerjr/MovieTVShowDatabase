@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 class Movie : Parcelable {
 
     @SerializedName("id")
-    var id: String? = null
+    var id: String? = ""
 
     @SerializedName("title")
     var title: String? = null

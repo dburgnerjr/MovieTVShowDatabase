@@ -2,6 +2,7 @@ package com.danielburgnerjr.movietvshowdatabase.api
 
 import com.danielburgnerjr.movietvshowdatabase.model.Movie
 import com.danielburgnerjr.movietvshowdatabase.model.TV
+import com.danielburgnerjr.movietvshowdatabase.model.Video
 
 import retrofit.Callback
 import retrofit.http.GET
@@ -22,10 +23,10 @@ interface MovieTVAPI {
 
     @GET("/movie/upcoming")
     fun getUpcomingMovies(cb: Callback<Movie.MovieResult>)
-/*
-    @GET("/movie/{id}/videos")
-    fun getMovieVideos(@Path("id") movieId: Long, cb: Callback<Video.VideoResult>)
 
+    @GET("/movie/{id}/videos")
+    fun getMovieVideos(@Path("id") movieId: Long?, cb: Callback<Video.VideoResult>)
+/*
     @GET("/movie/{id}/reviews")
     fun getMovieReviews(@Path("id") movieId: Long, cb: Callback<Review.ReviewResult>)
 */
@@ -34,10 +35,10 @@ interface MovieTVAPI {
 
     @GET("/tv/top_rated")
     fun getTopRatedTVShows(cb: Callback<TV.TVResult>)
-/*
-    @GET("/tv/{id}/videos")
-    fun getTVVideos(@Path("id") tvId: Long, cb: Callback<Video.VideoResult>)
 
+    @GET("/tv/{id}/videos")
+    fun getTVVideos(@Path("id") tvId: Long?, cb: Callback<Video.VideoResult>)
+/*
     @GET("/tv/{id}/reviews")
     fun getTVReviews(@Path("id") tvId: Long, cb: Callback<Review.ReviewResult>)
 
