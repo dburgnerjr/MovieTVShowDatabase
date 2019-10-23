@@ -108,13 +108,13 @@
                 android:text="@string/reviews_title"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
-<!--
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/reviews"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:listitem="@layout/reviews_list" />
--->
+
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

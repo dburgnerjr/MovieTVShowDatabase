@@ -32,6 +32,7 @@ import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
 
+import com.danielburgnerjr.movietvshowdatabase.adapter.ReviewAdapter
 import com.danielburgnerjr.movietvshowdatabase.adapter.VideoAdapter
 
 import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
@@ -39,6 +40,7 @@ import com.danielburgnerjr.movietvshowdatabase.api.MovieTVAPI
 import com.danielburgnerjr.movietvshowdatabase.model.Movie
 import com.danielburgnerjr.movietvshowdatabase.model.TV
 import com.danielburgnerjr.movietvshowdatabase.model.Video
+import com.danielburgnerjr.movietvshowdatabase.model.Review
 
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
@@ -48,14 +50,13 @@ import com.squareup.picasso.Picasso
  * Created by dburgnerjr on 6/5/17.
  */
 
-class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, ReviewAdapter.Callbacks
- {
+class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewAdapter.Callbacks {
 
     private var mMovie: Movie? = null
     private var tTV: TV? = null
     private var mVideoAdapter: VideoAdapter? = null
-    //private var mReviewAdapter: ReviewAdapter? = null
-    //private var mDb: SQLiteDatabase? = null
+    private var mReviewAdapter: ReviewAdapter? = null
+    private var mDb: SQLiteDatabase? = null
 
     internal var ivBackdrop: ImageView? = null
     internal var ivPoster: ImageView? = null
@@ -89,7 +90,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, Revi
         tvVideosHeading = findViewById<View>(R.id.videos_heading) as TextView
         rvVideoList = findViewById(R.id.video_list) as RecyclerView
         tvReviewsHeading = findViewById<View>(R.id.reviews_heading) as TextView
-        //rvReviews = findViewById(R.id.reviews) as RecyclerView
+        rvReviews = findViewById(R.id.reviews) as RecyclerView
         mFavoriteButton = findViewById(R.id.favorite_button) as Button
 
 
@@ -188,12 +189,12 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, Revi
                 fetchTrailers(tTV!!.id?.let { java.lang.Long.parseLong(it) })
             }
         }
-/*
+
         // For vertical list of reviews
         val llmReviews = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
-        rvReviews.layoutManager = llmReviews
+        rvReviews!!.layoutManager = llmReviews
         mReviewAdapter = ReviewAdapter(ArrayList<Review>(), this as ReviewAdapter.Callbacks)
-        rvReviews.adapter = mReviewAdapter
+        rvReviews!!.adapter = mReviewAdapter
 
         // Fetch reviews only if savedInstanceState == null
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_REVIEWS)) {
@@ -201,39 +202,38 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, Revi
             mReviewAdapter!!.add(reviews)
         } else {
             if (getIntent().hasExtra(EXTRA_MOVIE)) {
-                fetchReviews(java.lang.Long.parseLong(mMovie!!.getId()))
+                fetchReviews(mMovie!!.id?.let { java.lang.Long.parseLong(it) })
             } else if (getIntent().hasExtra(EXTRA_TV)) {
-                fetchReviews(java.lang.Long.parseLong(tTV!!.getId()))
+                fetchReviews(tTV!!.id?.let { java.lang.Long.parseLong(it) })
             }
         }
 
-        val pmDbHelper = MovieTVDbHelper(this)
+        val pmDbHelper = MovieTVShowDatabaseHelper(this)
         mDb = pmDbHelper.getWritableDatabase()
 
-        mFavoriteButton.setOnClickListener {
+        mFavoriteButton!!.setOnClickListener {
             if (getIntent().hasExtra(EXTRA_MOVIE)) {
-                if (mMovie!!.isFavorite()) {
-                    mMovie!!.setFavorite(false)
-                    mFavoriteButton.setText(R.string.favorite)
+                if (mMovie!!.isFavorite) {
+                    mMovie!!.isFavorite = false
+                    mFavoriteButton!!.setText(R.string.favorite)
                     removeFromFavorites()
                 } else {
-                    mMovie!!.setFavorite(true)
-                    mFavoriteButton.setText(R.string.unfavorite)
+                    mMovie!!.isFavorite = true
+                    mFavoriteButton!!.setText(R.string.unfavorite)
                     addToFavorites()
                 }
             } else if (getIntent().hasExtra(EXTRA_TV)) {
-                if (tTV!!.isFavorite()) {
-                    tTV!!.setFavorite(false)
-                    mFavoriteButton.setText(R.string.favorite)
+                if (tTV!!.isFavorite) {
+                    tTV!!.isFavorite = false
+                    mFavoriteButton!!.setText(R.string.favorite)
                     removeFromFavorites()
                 } else {
-                    tTV!!.setFavorite(true)
-                    mFavoriteButton.setText(R.string.unfavorite)
+                    tTV!!.isFavorite = true
+                    mFavoriteButton!!.setText(R.string.unfavorite)
                     addToFavorites()
                 }
             }
         }
-*/
 
         Picasso.get()
                 .load(TMDB_IMAGE_PATH + strPoster!!)
@@ -278,18 +278,18 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, Revi
             })
         }
     }
-/*
-    private fun fetchReviews(lMovieId: Long) {
+
+    private fun fetchReviews(lMovieId: Long?) {
         val raAdapter = RestAdapter.Builder()
                 .setEndpoint("http://api.themoviedb.org/3")
                 .setRequestInterceptor { request -> request.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java!!)
+        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
         if (intent.hasExtra(EXTRA_MOVIE)) {
             mtaService.getMovieReviews(lMovieId, object : Callback<Review.ReviewResult> {
                 override fun success(reviewResult: Review.ReviewResult, response: Response) {
-                    mReviewAdapter!!.setReviews(reviewResult.getReviews())
+                    mReviewAdapter!!.setReviews(reviewResult.reviews)
                 }
 
                 override fun failure(error: RetrofitError) {
@@ -299,7 +299,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, Revi
         } else if (intent.hasExtra(EXTRA_TV)) {
             mtaService.getTVReviews(lMovieId, object : Callback<Review.ReviewResult> {
                 override fun success(reviewResult: Review.ReviewResult, response: Response) {
-                    mReviewAdapter!!.setReviews(reviewResult.getReviews())
+                    mReviewAdapter!!.setReviews(reviewResult.reviews)
                 }
 
                 override fun failure(error: RetrofitError) {
@@ -308,62 +308,58 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks //, Revi
             })
         }
     }
-*/
 
     private fun closeOnError(msg: String) {
         finish()
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
-/*
 
     private fun addToFavorites() {
         val cv = ContentValues()
         if (intent.hasExtra(EXTRA_MOVIE)) {
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_ID, mMovie!!.getId())
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE, mMovie!!.getTitle())
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_OVERVIEW, mMovie!!.getDescription())
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_POSTERPATH, mMovie!!.getPoster())
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_BACKDROP, mMovie!!.getBackdrop())
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_RELEASEDATE, mMovie!!.getReleaseDate())
-            cv.put(MovieTVDBContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE, mMovie!!.getUserRating())
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID, mMovie!!.id)
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE, mMovie!!.title)
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_OVERVIEW, mMovie!!.description)
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_POSTERPATH, mMovie!!.poster)
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_BACKDROP, mMovie!!.backdrop)
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE, mMovie!!.releaseDate)
+            cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE, mMovie!!.userRating)
 
-            val rowCount = mDb!!.insert(MovieTVDBContract.MovieEntry.TABLE_NAME, null, cv)
+            val rowCount = mDb!!.insert(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, cv)
         } else if (intent.hasExtra(EXTRA_TV)) {
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_ID, tTV!!.getId())
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_ORIGINALTITLE, tTV!!.getTitle())
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_OVERVIEW, tTV!!.getDescription())
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_POSTERPATH, tTV!!.getPoster())
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_BACKDROP, tTV!!.getBackdrop())
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_RELEASEDATE, tTV!!.getReleaseDate())
-            cv.put(MovieTVDBContract.TVEntry.COLUMN_NAME_VOTEAVERAGE, tTV!!.getUserRating())
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID, tTV!!.id)
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE, tTV!!.title)
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_OVERVIEW, tTV!!.description)
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_POSTERPATH, tTV!!.poster)
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_BACKDROP, tTV!!.backdrop)
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE, tTV!!.releaseDate)
+            cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE, tTV!!.userRating)
 
-            val rowCount = mDb!!.insert(MovieTVDBContract.TVEntry.TABLE_NAME, null, cv)
+            val rowCount = mDb!!.insert(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, cv)
 
         }
     }
 
     private fun removeFromFavorites() {
         if (intent.hasExtra(EXTRA_MOVIE)) {
-            var uri = MovieTVDBContract.MovieEntry.CONTENT_URI
-            uri = uri.buildUpon().appendPath(mMovie!!.getId().toString()).build()
+            var uri = MovieTVShowDatabaseContract.MovieEntry.CONTENT_URI
+            uri = uri.buildUpon().appendPath(mMovie!!.id.toString()).build()
             val rowCount = contentResolver.delete(uri, null, null)
         } else if (intent.hasExtra(EXTRA_TV)) {
-            var uri = MovieTVDBContract.TVEntry.CONTENT_URI
-            uri = uri.buildUpon().appendPath(tTV!!.getId().toString()).build()
+            var uri = MovieTVShowDatabaseContract.TVEntry.CONTENT_URI
+            uri = uri.buildUpon().appendPath(tTV!!.id.toString()).build()
             val rowCount = contentResolver.delete(uri, null, null)
-
         }
     }
-*/
-    override fun watch(video: Video, nPosition: Int) {
+
+    override fun watch(video: Video, position: Int) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + video.key)))
     }
-/*
-    fun read(review: Review, position: Int) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl())))
+
+    override fun read(review: Review, position: Int) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(review.url)))
     }
 
-*/
     companion object {
         val EXTRA_MOVIE = "movie"
         val EXTRA_TV = "tv"

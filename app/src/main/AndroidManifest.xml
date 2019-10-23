@@ -25,6 +25,11 @@
             android:label="MovieDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <provider
+            android:name=".data.MovieTVShowDatabaseContentProvider"
+            android:authorities="com.danielburgnerjr.movietvshowdatabase"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>
