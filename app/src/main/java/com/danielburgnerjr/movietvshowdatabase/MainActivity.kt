@@ -33,6 +33,10 @@ import com.danielburgnerjr.movietvshowdatabase.model.TV
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
 
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+
 import com.squareup.picasso.Picasso
 
 import java.util.ArrayList
@@ -49,12 +53,18 @@ class MainActivity : AppCompatActivity() {
     private var mMovieAdapter: MovieAdapter? = null
     private var mTVAdapter: TVAdapter? = null
     private var mDb: SQLiteDatabase? = null
+    private var mAdView: AdView? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         rvRecyclerView = findViewById<View>(R.id.rvRecyclerView) as RecyclerView
         spnMenuOptions = findViewById<View>(R.id.spnMenuOptions) as Spinner
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val mAdView = findViewById(R.id.adView) as AdView
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
         val mtDbHelper = MovieTVShowDatabaseHelper(this)
         mDb = mtDbHelper.getWritableDatabase()

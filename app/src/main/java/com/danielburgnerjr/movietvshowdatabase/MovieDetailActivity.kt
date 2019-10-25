@@ -44,6 +44,11 @@ import com.danielburgnerjr.movietvshowdatabase.model.Review
 
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseContract
 import com.danielburgnerjr.movietvshowdatabase.data.MovieTVShowDatabaseHelper
+
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+
 import com.squareup.picasso.Picasso
 
 /**
@@ -57,6 +62,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
     private var mVideoAdapter: VideoAdapter? = null
     private var mReviewAdapter: ReviewAdapter? = null
     private var mDb: SQLiteDatabase? = null
+    private var mAdView: AdView? = null
 
     internal var ivBackdrop: ImageView? = null
     internal var ivPoster: ImageView? = null
@@ -92,7 +98,10 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         tvReviewsHeading = findViewById<View>(R.id.reviews_heading) as TextView
         rvReviews = findViewById(R.id.reviews) as RecyclerView
         mFavoriteButton = findViewById(R.id.favorite_button) as Button
-
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        val mAdView = findViewById(R.id.adView) as AdView
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
         val intent = intent
         if (intent == null) {
