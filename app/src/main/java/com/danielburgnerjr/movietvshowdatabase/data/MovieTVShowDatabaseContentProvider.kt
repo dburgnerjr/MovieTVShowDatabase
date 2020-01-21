@@ -5,12 +5,11 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 
 class MovieTVShowDatabaseContentProvider : ContentProvider() {
 
-    var movieDbHelper: MovieTVShowDatabaseHelper? = null
+    private var movieDbHelper: MovieTVShowDatabaseHelper? = null
 
     override fun onCreate(): Boolean {
         movieDbHelper = MovieTVShowDatabaseHelper(context)

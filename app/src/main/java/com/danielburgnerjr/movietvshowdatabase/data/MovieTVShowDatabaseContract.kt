@@ -5,10 +5,10 @@ import android.provider.BaseColumns
 
 object MovieTVShowDatabaseContract {
 
-    val AUTHORITY = "com.danielburgnerjr.movietvshowdatabase"
+    const val AUTHORITY = "com.danielburgnerjr.movietvshowdatabase"
     val BASE_CONTENT_URI = Uri.parse("content://$AUTHORITY")
-    val MOVIE_ENTRY = "movie"
-    val TV_ENTRY = "tv"
+    const val MOVIE_ENTRY = "movie"
+    const val TV_ENTRY = "tv"
 
     /* Define table and content */
     class MovieEntry : BaseColumns {
