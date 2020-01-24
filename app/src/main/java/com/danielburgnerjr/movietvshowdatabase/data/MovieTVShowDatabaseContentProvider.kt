@@ -1,5 +1,6 @@
 package com.danielburgnerjr.movietvshowdatabase.data
 
+import android.annotation.SuppressLint
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.ContentValues
@@ -16,16 +17,17 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
         return true
     }
 
+    @SuppressLint("Recycle")
     override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
 
         val db = movieDbHelper?.readableDatabase
         val match = sUriMatcher.match(uri)
         val retCursor: Cursor?
 
-        when (match) {
-            MOVIES -> retCursor = db?.query(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
+        retCursor = when (match) {
+            MOVIES -> db?.query(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
                     MovieTVShowDatabaseContract.MovieEntry.COLUMN_TIMESTAMP)
-            TVS -> retCursor = db?.query(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, null, null, null, null,
+            TVS -> db?.query(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, null, null, null, null,
                     MovieTVShowDatabaseContract.TVEntry.COLUMN_TIMESTAMP)
             else -> throw UnsupportedOperationException("Unknown uri: $uri")
         }
@@ -69,10 +71,10 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
         val db = movieDbHelper?.writableDatabase
         val match = sUriMatcher.match(uri)
-        var moviesDeleted: Int = 0 // starts as 0
-        var tvsDeleted: Int = 0 // starts as 0
+        var moviesDeleted = 0
+        var tvsDeleted = 0
         val id: String
-        var deletedRecords: Int = 0
+        var deletedRecords = 0
 
         when (match) {
             MOVIE_ID -> {
@@ -108,13 +110,13 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
     }
 
     companion object {
-        val MOVIES = 100
-        val MOVIE_ID = 101
-        val TVS = 200
-        val TV_ID = 201
+        const val MOVIES = 100
+        const val MOVIE_ID = 101
+        const val TVS = 200
+        const val TV_ID = 201
         private val sUriMatcher = buildUriMatcher()
 
-        fun buildUriMatcher(): UriMatcher {
+        private fun buildUriMatcher(): UriMatcher {
             val uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
             uriMatcher.addURI(MovieTVShowDatabaseContract.AUTHORITY, MovieTVShowDatabaseContract.MOVIE_ENTRY, MOVIES)
