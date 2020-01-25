@@ -5,6 +5,7 @@ import android.os.Parcelable
 
 import com.google.gson.annotations.SerializedName
 
+@Suppress("unused")
 class TV : Parcelable {
 
     @SerializedName("id")
@@ -30,7 +31,6 @@ class TV : Parcelable {
 
     var isFavorite = false
 
-    constructor() {}
 
     constructor(strID: String, strT: String, strD: String, strP: String, strBD: String, strRD: String, dVA: Double, bF: Boolean) {
         this.id = strID
@@ -43,7 +43,7 @@ class TV : Parcelable {
         this.isFavorite = bF
     }
 
-    protected constructor(`in`: Parcel) {
+    private constructor(`in`: Parcel) {
         id = `in`.readString()
         title = `in`.readString()
         poster = `in`.readString()
@@ -72,13 +72,9 @@ class TV : Parcelable {
     class TVResult {
         @SerializedName("results")
         val results: List<TV>? = null
-
-        val size: Int
-            get() = results!!.size
     }
 
     companion object {
-
         @JvmField
         val CREATOR: Parcelable.Creator<TV> = object : Parcelable.Creator<TV> {
             override fun createFromParcel(`in`: Parcel): TV {

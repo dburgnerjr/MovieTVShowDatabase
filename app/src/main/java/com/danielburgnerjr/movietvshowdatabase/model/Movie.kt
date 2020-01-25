@@ -5,6 +5,7 @@ import android.os.Parcelable
 
 import com.google.gson.annotations.SerializedName
 
+@Suppress("unused")
 class Movie : Parcelable {
 
     @SerializedName("id")
@@ -30,8 +31,6 @@ class Movie : Parcelable {
 
     var isFavorite = false
 
-    constructor() {}
-
     constructor(strID: String, strT: String, strD: String, strP: String, strBD: String, strRD: String, dVA: Double, bF: Boolean) {
         this.id = strID
         this.title = strT
@@ -43,7 +42,7 @@ class Movie : Parcelable {
         this.isFavorite = bF
     }
 
-    protected constructor(`in`: Parcel) {
+    private constructor(`in`: Parcel) {
         id = `in`.readString()
         title = `in`.readString()
         poster = `in`.readString()
@@ -72,9 +71,6 @@ class Movie : Parcelable {
     class MovieResult {
         @SerializedName("results")
         val results: List<Movie>? = null
-
-        val size: Int
-            get() = results!!.size
     }
 
     companion object {

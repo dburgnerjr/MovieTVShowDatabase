@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 
 import com.danielburgnerjr.movietvshowdatabase.R
@@ -18,21 +17,17 @@ import java.util.ArrayList
 
 class TVAdapter(private val conContext: Context) : RecyclerView.Adapter<MovieViewHolder>() {
     private var mTVList: MutableList<TV>? = null
-    private val liInflater: LayoutInflater
-
-    init {
-        this.liInflater = LayoutInflater.from(conContext)
-    }
+    private val liInflater: LayoutInflater = LayoutInflater.from(conContext)
 
     override fun onCreateViewHolder(vgParent: ViewGroup, nViewType: Int): MovieViewHolder {
         val vView = liInflater.inflate(R.layout.movie_item, vgParent, false)
         val mvhHolder = MovieViewHolder(vView)
-        vView.setOnClickListener(View.OnClickListener {
+        vView.setOnClickListener{
             val nPos = mvhHolder.adapterPosition
             val intI = Intent(conContext, MovieDetailActivity::class.java)
             intI.putExtra(MovieDetailActivity.EXTRA_TV, mTVList!![nPos])
             conContext.startActivity(intI)
-        })
+        }
         return mvhHolder
     }
 
@@ -50,12 +45,12 @@ class TVAdapter(private val conContext: Context) : RecyclerView.Adapter<MovieVie
     }
 
     fun setTVList(tl: List<TV>?) {
-        this.mTVList = ArrayList<TV>()
+        this.mTVList = ArrayList()
         tl?.let { this.mTVList!!.addAll(tl) }
         notifyDataSetChanged()
     }
 
     companion object {
-        val TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500"
+        const val TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500"
     }
 }

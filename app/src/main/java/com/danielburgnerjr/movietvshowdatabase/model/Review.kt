@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 import java.util.ArrayList
 
+@Suppress("unused")
 class Review : Parcelable {
 
     @SerializedName("id")
@@ -20,22 +21,6 @@ class Review : Parcelable {
 
     @SerializedName("url")
     var url: String? = null
-
-    constructor() {}
-
-    constructor(strID: String, strA: String, strC: String, strU: String) {
-        this.strID = strID
-        this.author = strA
-        this.content = strC
-        this.url = strU
-    }
-
-    protected constructor(`in`: Parcel) {
-        strID = `in`.readString()
-        author = `in`.readString()
-        content = `in`.readString()
-        url = `in`.readString()
-    }
 
     override fun describeContents(): Int {
         return 0
@@ -54,7 +39,6 @@ class Review : Parcelable {
     }
 
     companion object {
-
         @JvmField
         val CREATOR: Parcelable.Creator<Review> = object : Parcelable.Creator<Review> {
             override fun createFromParcel(source: Parcel): Review {

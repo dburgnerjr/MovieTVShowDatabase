@@ -3,8 +3,6 @@ package com.danielburgnerjr.movietvshowdatabase
 import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
-import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -13,9 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -27,7 +23,6 @@ import butterknife.ButterKnife
 import java.util.ArrayList
 
 import retrofit.Callback
-import retrofit.RequestInterceptor
 import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
@@ -62,20 +57,19 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
     private var mVideoAdapter: VideoAdapter? = null
     private var mReviewAdapter: ReviewAdapter? = null
     private var mDb: SQLiteDatabase? = null
-    private var mAdView: AdView? = null
 
-    internal var ivBackdrop: ImageView? = null
-    internal var ivPoster: ImageView? = null
-    internal var tvDescription: TextView? = null
-    internal var tvReleaseDateHeading: TextView? = null
-    internal var tvReleaseDate: TextView? = null
-    internal var rbRating: RatingBar? = null
-    internal var tvVideosHeading: TextView? = null
-    internal var rvVideoList: RecyclerView? = null
-    internal var tvReviewsHeading: TextView? = null
-    internal var rvReviews: RecyclerView? = null
+    private var ivBackdrop: ImageView? = null
+    private var ivPoster: ImageView? = null
+    private var tvDescription: TextView? = null
+    private var tvReleaseDateHeading: TextView? = null
+    private var tvReleaseDate: TextView? = null
+    private var rbRating: RatingBar? = null
+    private var tvVideosHeading: TextView? = null
+    private var rvVideoList: RecyclerView? = null
+    private var tvReviewsHeading: TextView? = null
+    private var rvReviews: RecyclerView? = null
 
-    internal var mFavoriteButton: Button? = null
+    private var mFavoriteButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,12 +88,12 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         tvReleaseDate = findViewById<View>(R.id.release_date) as TextView
         rbRating = findViewById<View>(R.id.rating) as RatingBar
         tvVideosHeading = findViewById<View>(R.id.videos_heading) as TextView
-        rvVideoList = findViewById(R.id.video_list) as RecyclerView
+        rvVideoList = findViewById(R.id.video_list)
         tvReviewsHeading = findViewById<View>(R.id.reviews_heading) as TextView
-        rvReviews = findViewById(R.id.reviews) as RecyclerView
-        mFavoriteButton = findViewById(R.id.favorite_button) as Button
+        rvReviews = findViewById(R.id.reviews)
+        mFavoriteButton = findViewById(R.id.favorite_button)
         MobileAds.initialize(this, getString(R.string.admob_app_id))
-        val mAdView = findViewById(R.id.adView) as AdView
+        val mAdView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 
@@ -110,20 +104,20 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
 
         val data = getIntent().extras
         if (data == null) {
-            closeOnError(getString(R.string.Data_Not_Found))
+            closeOnError(getString(R.string.Data_Not_Found_Movie))
             return
         }
 
         if (getIntent().hasExtra(EXTRA_MOVIE)) {
-            mMovie = data.getParcelable<Movie>(EXTRA_MOVIE)
+            mMovie = data.getParcelable(EXTRA_MOVIE)
             if (mMovie == null) {
-                closeOnError(getString(R.string.Data_Not_Found))
+                closeOnError(getString(R.string.Data_Not_Found_Movie))
                 return
             }
         } else if (getIntent().hasExtra(EXTRA_TV)) {
-            tTV = data.getParcelable<TV>(EXTRA_TV)
+            tTV = data.getParcelable(EXTRA_TV)
             if (tTV == null) {
-                closeOnError(getString(R.string.Data_Not_Found))
+                closeOnError(getString(R.string.Data_Not_Found_TV))
                 return
             }
         } else {
@@ -149,7 +143,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
 
         if (getIntent().hasExtra(EXTRA_MOVIE)) {
             strDescription = mMovie!!.description
-            tvReleaseDateHeading?.text = "Release Date"
+            tvReleaseDateHeading?.text = getString(R.string.release_date)
             strReleaseDate = mMovie!!.releaseDate
             dUserRating = mMovie!!.userRating
             strPoster = mMovie!!.poster
@@ -162,7 +156,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
             }
         } else if (getIntent().hasExtra(EXTRA_TV)) {
             strDescription = tTV!!.description
-            tvReleaseDateHeading?.text = "First Air Date"
+            tvReleaseDateHeading?.text = getString(R.string.first_air_date)
             strReleaseDate = tTV!!.releaseDate
             dUserRating = tTV!!.userRating
             strPoster = tTV!!.poster
@@ -183,7 +177,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
 
         val layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
         rvVideoList!!.layoutManager = layoutManager
-        mVideoAdapter = VideoAdapter(ArrayList<Video>(), this)
+        mVideoAdapter = VideoAdapter(ArrayList(), this)
         rvVideoList!!.adapter = mVideoAdapter
         rvVideoList!!.isNestedScrollingEnabled = false
 
@@ -202,7 +196,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         // For vertical list of reviews
         val llmReviews = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         rvReviews!!.layoutManager = llmReviews
-        mReviewAdapter = ReviewAdapter(ArrayList<Review>(), this as ReviewAdapter.Callbacks)
+        mReviewAdapter = ReviewAdapter(ArrayList(), this as ReviewAdapter.Callbacks)
         rvReviews!!.adapter = mReviewAdapter
 
         // Fetch reviews only if savedInstanceState == null
@@ -218,28 +212,40 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         }
 
         val pmDbHelper = MovieTVShowDatabaseHelper(this)
-        mDb = pmDbHelper.getWritableDatabase()
+        mDb = pmDbHelper.writableDatabase
 
         mFavoriteButton!!.setOnClickListener {
             if (getIntent().hasExtra(EXTRA_MOVIE)) {
                 if (mMovie!!.isFavorite) {
                     mMovie!!.isFavorite = false
                     mFavoriteButton!!.setText(R.string.favorite)
-                    removeFromFavorites()
+                    if (removeFromFavorites() != 0)
+                        Toast.makeText(this, "This movie was successfully removed from your favorites.", Toast.LENGTH_LONG).show()
+                    else
+                        Toast.makeText(this, "This movie was unsuccessfully removed from your favorites.", Toast.LENGTH_LONG).show()
                 } else {
                     mMovie!!.isFavorite = true
                     mFavoriteButton!!.setText(R.string.unfavorite)
-                    addToFavorites()
+                    if (addToFavorites() != 0L)
+                        Toast.makeText(this, "This movie was successfully added to your favorites.", Toast.LENGTH_LONG).show()
+                    else
+                        Toast.makeText(this, "This movie was unsuccessfully added to your favorites.", Toast.LENGTH_LONG).show()
                 }
             } else if (getIntent().hasExtra(EXTRA_TV)) {
                 if (tTV!!.isFavorite) {
                     tTV!!.isFavorite = false
                     mFavoriteButton!!.setText(R.string.favorite)
-                    removeFromFavorites()
+                    if (removeFromFavorites() != 0)
+                        Toast.makeText(this, "This TV show was successfully removed from your favorites.", Toast.LENGTH_LONG).show()
+                    else
+                        Toast.makeText(this, "This TV show was unsuccessfully removed from your favorites.", Toast.LENGTH_LONG).show()
                 } else {
                     tTV!!.isFavorite = true
                     mFavoriteButton!!.setText(R.string.unfavorite)
-                    addToFavorites()
+                    if (addToFavorites() != 0L)
+                        Toast.makeText(this, "This TV show was successfully added to your favorites.", Toast.LENGTH_LONG).show()
+                    else
+                        Toast.makeText(this, "This TV show was unsuccessfully added to your favorites.", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -254,7 +260,6 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
                 .placeholder(R.drawable.placeholder)   // optional
                 .error(R.drawable.error)
                 .into(ivBackdrop)
-
     }
 
 
@@ -323,7 +328,8 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun addToFavorites() {
+    private fun addToFavorites(): Long {
+        var rowCount = 0L
         val cv = ContentValues()
         if (intent.hasExtra(EXTRA_MOVIE)) {
             cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID, mMovie!!.id)
@@ -334,7 +340,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
             cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE, mMovie!!.releaseDate)
             cv.put(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE, mMovie!!.userRating)
 
-            val rowCount = mDb!!.insert(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, cv)
+            rowCount = mDb!!.insert(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, cv)
         } else if (intent.hasExtra(EXTRA_TV)) {
             cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID, tTV!!.id)
             cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE, tTV!!.title)
@@ -344,21 +350,23 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
             cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE, tTV!!.releaseDate)
             cv.put(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE, tTV!!.userRating)
 
-            val rowCount = mDb!!.insert(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, cv)
-
+            rowCount = mDb!!.insert(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, cv)
         }
+        return rowCount
     }
 
-    private fun removeFromFavorites() {
+    private fun removeFromFavorites(): Int {
+        var rowCount = 0
         if (intent.hasExtra(EXTRA_MOVIE)) {
             var uri = MovieTVShowDatabaseContract.MovieEntry.CONTENT_URI
             uri = uri.buildUpon().appendPath(mMovie!!.id.toString()).build()
-            val rowCount = contentResolver.delete(uri, null, null)
+            rowCount = contentResolver.delete(uri, null, null)
         } else if (intent.hasExtra(EXTRA_TV)) {
             var uri = MovieTVShowDatabaseContract.TVEntry.CONTENT_URI
             uri = uri.buildUpon().appendPath(tTV!!.id.toString()).build()
-            val rowCount = contentResolver.delete(uri, null, null)
+            rowCount = contentResolver.delete(uri, null, null)
         }
+        return rowCount
     }
 
     override fun watch(video: Video, position: Int) {
@@ -370,10 +378,10 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
     }
 
     companion object {
-        val EXTRA_MOVIE = "movie"
-        val EXTRA_TV = "tv"
-        val EXTRA_VIDEOS = "video"
-        val EXTRA_REVIEWS = "review"
-        val TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500"
+        const val EXTRA_MOVIE = "movie"
+        const val EXTRA_TV = "tv"
+        const val EXTRA_VIDEOS = "video"
+        const val EXTRA_REVIEWS = "review"
+        const val TMDB_IMAGE_PATH = "http://image.tmdb.org/t/p/w500"
     }
 }

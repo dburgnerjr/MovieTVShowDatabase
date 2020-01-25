@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 import java.util.ArrayList
 
+@Suppress("unused")
 class Video : Parcelable {
 
     @SerializedName("id")
@@ -24,10 +25,6 @@ class Video : Parcelable {
     @SerializedName("size")
     var strSize: String? = ""
 
-    var videoUrl: String = "http://www.youtube.com/watch?v=" + key!!
-
-    constructor() {}
-
     constructor(strID: String, strK: String, strN: String, strSt: String, strSz: String) {
         this.strID = strID
         this.key = strK
@@ -36,7 +33,7 @@ class Video : Parcelable {
         this.strSize = strSz
     }
 
-    protected constructor(`in`: Parcel) {
+    private constructor(`in`: Parcel) {
         strID = `in`.readString()
         key = `in`.readString()
         name = `in`.readString()
@@ -62,9 +59,6 @@ class Video : Parcelable {
     }
 
     companion object {
-
-        val LOG_TAG = Video::class.java.simpleName
-
         @JvmField
         val CREATOR: Parcelable.Creator<Video> = object : Parcelable.Creator<Video> {
             override fun createFromParcel(`in`: Parcel): Video {

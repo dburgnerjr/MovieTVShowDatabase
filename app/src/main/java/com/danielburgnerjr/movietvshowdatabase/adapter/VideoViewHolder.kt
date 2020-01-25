@@ -10,11 +10,10 @@ import com.danielburgnerjr.movietvshowdatabase.R
 import com.danielburgnerjr.movietvshowdatabase.model.Video
 
 class VideoViewHolder(val vView: View) : RecyclerView.ViewHolder(vView) {
-    var ivThumbnailView: ImageView
+    var ivThumbnailView: ImageView = vView.findViewById<View>(R.id.trailer_thumbnail) as ImageView
     var viVideo: Video? = null
 
     init {
-        ivThumbnailView = vView.findViewById<View>(R.id.trailer_thumbnail) as ImageView
         ButterKnife.bind(this, vView)
     }
 }

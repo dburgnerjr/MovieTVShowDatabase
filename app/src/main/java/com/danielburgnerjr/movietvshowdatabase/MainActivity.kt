@@ -1,24 +1,14 @@
 package com.danielburgnerjr.movietvshowdatabase
 
-import android.content.Context
-import android.content.Intent
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import android.widget.Spinner
-import android.widget.Toast
 
 import butterknife.ButterKnife
 
@@ -37,24 +27,19 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
-import com.squareup.picasso.Picasso
-
 import java.util.ArrayList
 
 import retrofit.Callback
-import retrofit.RequestInterceptor
 import retrofit.RestAdapter
 import retrofit.RetrofitError
 import retrofit.client.Response
 
 class MainActivity : AppCompatActivity() {
     internal var rvRecyclerView: RecyclerView? = null
-    internal var spnMenuOptions: Spinner? = null
+    private var spnMenuOptions: Spinner? = null
     private var mMovieAdapter: MovieAdapter? = null
     private var mTVAdapter: TVAdapter? = null
     private var mDb: SQLiteDatabase? = null
-    private var mAdView: AdView? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +47,12 @@ class MainActivity : AppCompatActivity() {
         rvRecyclerView = findViewById<View>(R.id.rvRecyclerView) as RecyclerView
         spnMenuOptions = findViewById<View>(R.id.spnMenuOptions) as Spinner
         MobileAds.initialize(this, getString(R.string.admob_app_id))
-        val mAdView = findViewById(R.id.adView) as AdView
+        val mAdView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 
         val mtDbHelper = MovieTVShowDatabaseHelper(this)
-        mDb = mtDbHelper.getWritableDatabase()
+        mDb = mtDbHelper.writableDatabase
 
         ButterKnife.bind(this)
         rvRecyclerView?.setHasFixedSize(true)
@@ -124,7 +109,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // TODO Auto-generated method stub
             }
         }
     }
@@ -205,28 +189,22 @@ class MainActivity : AppCompatActivity() {
         val cursor = mDb!!.query(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
                 MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)
 
-        //TODO Build the movie list from the stored Ids
         val result = ArrayList<Movie>()
 
-        try {
-            while (cursor.moveToNext()) {
-                val id = cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID))
-
-                val movC = Movie(
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_OVERVIEW)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_POSTERPATH)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_BACKDROP)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE)),
-                        cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)),
-                        true)
-                println(movC.poster + " " + movC.backdrop)
-                result.add(movC)
-            }
-        } finally {
-            cursor.close()
+        while (cursor.moveToNext()) {
+            val movC = Movie(
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_OVERVIEW)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_POSTERPATH)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_BACKDROP)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE)),
+                    cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)),
+                    true)
+            println(movC.poster + " " + movC.backdrop)
+            result.add(movC)
         }
+        cursor.close()
         mMovieAdapter!!.setMovieList(result)
     }
 
@@ -270,28 +248,22 @@ class MainActivity : AppCompatActivity() {
         val cursor = mDb!!.query(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, null, null, null, null,
                 MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)
 
-        //TODO Build the TV list from the stored Ids
         val result = ArrayList<TV>()
 
-        try {
-            while (cursor.moveToNext()) {
-                val id = cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID))
-
-                val tvC = TV(
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_OVERVIEW)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_POSTERPATH)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_BACKDROP)),
-                        cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE)),
-                        cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)),
-                        true)
-                println(tvC.poster + " " + tvC.backdrop)
-                result.add(tvC)
-            }
-        } finally {
-            cursor.close()
+        while (cursor.moveToNext()) {
+            val tvC = TV(
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_OVERVIEW)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_POSTERPATH)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_BACKDROP)),
+                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE)),
+                    cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)),
+                    true)
+            println(tvC.poster + " " + tvC.backdrop)
+            result.add(tvC)
         }
+        cursor.close()
         mTVAdapter!!.setTVList(result)
     }
 
@@ -303,13 +275,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        if (savedInstanceState != null) {
-            val currentPosition = savedInstanceState.getInt(CURRENT_RECYCLER_VIEW_POSITION)
-            rvRecyclerView?.scrollToPosition(currentPosition)
-        }
+        val currentPosition = savedInstanceState.getInt(CURRENT_RECYCLER_VIEW_POSITION)
+        rvRecyclerView?.scrollToPosition(currentPosition)
     }
 
     companion object {
-        private val CURRENT_RECYCLER_VIEW_POSITION = "CurrentRecyclerViewPosition"
+        private const val CURRENT_RECYCLER_VIEW_POSITION = "CurrentRecyclerViewPosition"
     }
 }

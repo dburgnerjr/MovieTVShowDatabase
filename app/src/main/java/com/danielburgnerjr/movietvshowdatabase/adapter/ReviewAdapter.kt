@@ -13,7 +13,7 @@ import butterknife.ButterKnife
 import com.danielburgnerjr.movietvshowdatabase.R
 import com.danielburgnerjr.movietvshowdatabase.model.Review
 
-class ReviewAdapter(val reviews: ArrayList<Review>, private val mCallbacks: Callbacks) : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
+class ReviewAdapter(private val reviewList: ArrayList<Review>, private val mCallbacks: Callbacks) : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
     interface Callbacks {
         fun read(review: Review, position: Int)
@@ -26,7 +26,7 @@ class ReviewAdapter(val reviews: ArrayList<Review>, private val mCallbacks: Call
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        val review = reviews[position]
+        val review = reviewList[position]
 
         holder.mReview = review
         holder.mAuthorView.text = review.author
@@ -36,30 +36,28 @@ class ReviewAdapter(val reviews: ArrayList<Review>, private val mCallbacks: Call
     }
 
     override fun getItemCount(): Int {
-        return reviews.size
+        return reviewList.size
     }
 
     inner class ReviewViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        internal var mAuthorView: TextView
-        internal var mContentView: TextView
+        internal var mAuthorView: TextView = mView.findViewById<View>(R.id.review_author) as TextView
+        internal var mContentView: TextView = mView.findViewById<View>(R.id.review_content) as TextView
         var mReview: Review? = null
 
         init {
-            mAuthorView = mView.findViewById<View>(R.id.review_author) as TextView
-            mContentView = mView.findViewById<View>(R.id.review_content) as TextView
             ButterKnife.bind(this, mView)
         }
     }
 
     fun add(reviews: List<Review>?) {
-        this.reviews.clear()
-        this.reviews?.let { this.reviews.addAll(it) }
+        reviewList.clear()
+        reviews?.let { reviewList.addAll(it) }
         notifyDataSetChanged()
     }
 
     fun setReviews(mReview: List<Review>) {
-        reviews.clear()
-        reviews.addAll(mReview)
+        reviewList.clear()
+        reviewList.addAll(mReview)
         notifyDataSetChanged()
     }
 }
