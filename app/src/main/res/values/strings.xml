@@ -11,6 +11,9 @@
     <string name="unfavorite">Remove from Favorites</string>
     <string name="release_date">Release Date</string>
     <string name="first_air_date">First Air Date</string>
+    <string name="poster">Poster</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="play">Play</string>
     <string name="Data_Not_Found_Movie">Movie data is not available.</string>
     <string name="Data_Not_Found_TV">TV data is not available.</string>
     <string name="api_key">8a6f42fe5f7efc6139cda365db5c89a1</string>
