@@ -269,7 +269,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
                 .setRequestInterceptor { request -> request.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
+        val mtaService = raAdapter.create(MovieTVAPI::class.java)
         if (intent.hasExtra(EXTRA_MOVIE)) {
             mtaService.getMovieVideos(lMovieId, object : Callback<Video.VideoResult> {
                 override fun success(videoResult: Video.VideoResult, response: Response) {
@@ -299,7 +299,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
                 .setRequestInterceptor { request -> request.addEncodedQueryParam("api_key", getText(R.string.api_key).toString()) }
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build()
-        val mtaService = raAdapter.create<MovieTVAPI>(MovieTVAPI::class.java)
+        val mtaService = raAdapter.create(MovieTVAPI::class.java)
         if (intent.hasExtra(EXTRA_MOVIE)) {
             mtaService.getMovieReviews(lMovieId, object : Callback<Review.ReviewResult> {
                 override fun success(reviewResult: Review.ReviewResult, response: Response) {
