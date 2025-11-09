@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         rvRecyclerView = findViewById<View>(R.id.rvRecyclerView) as RecyclerView
         spnMenuOptions = findViewById<View>(R.id.spnMenuOptions) as Spinner
-        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        MobileAds.initialize(this@MainActivity)
         val mAdView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
@@ -193,13 +193,13 @@ class MainActivity : AppCompatActivity() {
 
         while (cursor.moveToNext()) {
             val movC = Movie(
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_OVERVIEW)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_POSTERPATH)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_BACKDROP)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE)),
-                    cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_ORIGINALTITLE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_OVERVIEW)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_POSTERPATH)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_BACKDROP)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_RELEASEDATE)),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.MovieEntry.COLUMN_NAME_VOTEAVERAGE)),
                     true)
             println(movC.poster + " " + movC.backdrop)
             result.add(movC)
@@ -252,13 +252,13 @@ class MainActivity : AppCompatActivity() {
 
         while (cursor.moveToNext()) {
             val tvC = TV(
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_OVERVIEW)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_POSTERPATH)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_BACKDROP)),
-                    cursor.getString(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE)),
-                    cursor.getDouble(cursor.getColumnIndex(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_ORIGINALTITLE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_OVERVIEW)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_POSTERPATH)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_BACKDROP)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_RELEASEDATE)),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow(MovieTVShowDatabaseContract.TVEntry.COLUMN_NAME_VOTEAVERAGE)),
                     true)
             println(tvC.poster + " " + tvC.backdrop)
             result.add(tvC)

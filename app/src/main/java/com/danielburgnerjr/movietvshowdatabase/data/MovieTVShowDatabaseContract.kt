@@ -1,12 +1,12 @@
 package com.danielburgnerjr.movietvshowdatabase.data
 
-import android.net.Uri
 import android.provider.BaseColumns
+import androidx.core.net.toUri
 
 object MovieTVShowDatabaseContract {
 
     const val AUTHORITY = "com.danielburgnerjr.movietvshowdatabase"
-    val BASE_CONTENT_URI = Uri.parse("content://$AUTHORITY")!!
+    val BASE_CONTENT_URI = "content://$AUTHORITY".toUri()
     const val MOVIE_ENTRY = "movie"
     const val TV_ENTRY = "tv"
 

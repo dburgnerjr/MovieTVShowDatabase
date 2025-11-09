@@ -32,7 +32,7 @@ class ReviewAdapter(private val reviewList: ArrayList<Review>, private val mCall
         holder.mAuthorView.text = review.author
         holder.mContentView.text = review.content
 
-        holder.mView.setOnClickListener { mCallbacks.read(review, holder.adapterPosition) }
+        holder.mView.setOnClickListener { mCallbacks.read(review, holder.bindingAdapterPosition) }
     }
 
     override fun getItemCount(): Int {

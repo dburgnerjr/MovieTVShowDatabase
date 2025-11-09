@@ -22,9 +22,8 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
 
         val db = movieDbHelper?.readableDatabase
         val match = sUriMatcher.match(uri)
-        val retCursor: Cursor?
 
-        retCursor = when (match) {
+        val retCursor: Cursor? = when (match) {
             MOVIES -> db?.query(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, null, null, null, null,
                     MovieTVShowDatabaseContract.MovieEntry.COLUMN_TIMESTAMP)
             TVS -> db?.query(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, null, null, null, null,
@@ -40,7 +39,7 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
         return null
     }
 
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+    override fun insert(uri: Uri, values: ContentValues?): Uri {
         val db = movieDbHelper?.writableDatabase
         val match = sUriMatcher.match(uri)
         val returnUri: Uri?
@@ -48,7 +47,7 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
         when (match) {
             MOVIES -> {
                 id = db?.insert(MovieTVShowDatabaseContract.MovieEntry.TABLE_NAME, null, values)
-                if (id ?: 1 > 0) {
+                if ((id ?: 1) > 0) {
                     returnUri = ContentUris.withAppendedId(MovieTVShowDatabaseContract.MovieEntry.CONTENT_URI, id!!)
                 } else {
                     throw android.database.SQLException("Failed to insert row into $uri")
@@ -56,7 +55,7 @@ class MovieTVShowDatabaseContentProvider : ContentProvider() {
             }
             TVS -> {
                 id = db?.insert(MovieTVShowDatabaseContract.TVEntry.TABLE_NAME, null, values)
-                if (id ?: 1 > 0) {
+                if ((id ?: 1) > 0) {
                     returnUri = ContentUris.withAppendedId(MovieTVShowDatabaseContract.TVEntry.CONTENT_URI, id!!)
                 } else {
                     throw android.database.SQLException("Failed to insert row into $uri")

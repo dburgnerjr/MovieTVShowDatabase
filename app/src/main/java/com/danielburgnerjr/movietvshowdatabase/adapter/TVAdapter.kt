@@ -23,7 +23,7 @@ class TVAdapter(private val conContext: Context) : RecyclerView.Adapter<MovieVie
         val vView = liInflater.inflate(R.layout.movie_item, vgParent, false)
         val mvhHolder = MovieViewHolder(vView)
         vView.setOnClickListener{
-            val nPos = mvhHolder.adapterPosition
+            val nPos = mvhHolder.bindingAdapterPosition
             val intI = Intent(conContext, MovieDetailActivity::class.java)
             intI.putExtra(MovieDetailActivity.EXTRA_TV, mTVList!![nPos])
             conContext.startActivity(intI)

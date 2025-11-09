@@ -52,7 +52,7 @@ class VideoAdapter(private val mVideoList: ArrayList<Video>?, private val mCallb
                 .config(Bitmap.Config.RGB_565)
                 .into(holder.ivThumbnailView)
 
-        holder.vView.setOnClickListener { mCallbacks.watch(video, holder.adapterPosition) }
+        holder.vView.setOnClickListener { mCallbacks.watch(video, holder.bindingAdapterPosition) }
     }
 
     override fun getItemCount(): Int {

@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Color
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +45,9 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
 import com.squareup.picasso.Picasso
+import androidx.core.net.toUri
+
+
 
 /**
  * Created by dburgnerjr on 6/5/17.
@@ -92,7 +95,7 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         tvReviewsHeading = findViewById<View>(R.id.reviews_heading) as TextView
         rvReviews = findViewById(R.id.reviews)
         mFavoriteButton = findViewById(R.id.favorite_button)
-        MobileAds.initialize(this, getString(R.string.admob_app_id))
+        MobileAds.initialize(this@MovieDetailActivity)
         val mAdView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
@@ -109,13 +112,21 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
         }
 
         if (getIntent().hasExtra(EXTRA_MOVIE)) {
-            mMovie = data.getParcelable(EXTRA_MOVIE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                mMovie = data.getParcelable(EXTRA_MOVIE, Movie::class.java)
+            } else {
+                mMovie = data.getParcelable(EXTRA_MOVIE)
+            }
             if (mMovie == null) {
                 closeOnError(getString(R.string.Data_Not_Found_Movie))
                 return
             }
         } else if (getIntent().hasExtra(EXTRA_TV)) {
-            tTV = data.getParcelable(EXTRA_TV)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                tTV = data.getParcelable(EXTRA_TV, TV::class.java)
+            } else {
+                tTV = data.getParcelable(EXTRA_TV)
+            }
             if (tTV == null) {
                 closeOnError(getString(R.string.Data_Not_Found_TV))
                 return
@@ -183,7 +194,12 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
 
         // Fetch trailers only if savedInstanceState == null
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_VIDEOS)) {
-            val videos = savedInstanceState.getParcelableArrayList<Video>(EXTRA_VIDEOS)
+            var videos: ArrayList<Video>? = ArrayList()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                videos = savedInstanceState.getParcelableArrayList<Video>(EXTRA_VIDEOS, Video::class.java)
+            } else {
+                videos = savedInstanceState.getParcelableArrayList<Video>(EXTRA_VIDEOS)
+            }
             mVideoAdapter!!.addVideo(videos)
         } else {
             if (getIntent().hasExtra(EXTRA_MOVIE)) {
@@ -201,7 +217,12 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
 
         // Fetch reviews only if savedInstanceState == null
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_REVIEWS)) {
-            val reviews = savedInstanceState.getParcelableArrayList<Review>(EXTRA_REVIEWS)
+            var reviews: ArrayList<Review>? = ArrayList()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                reviews = savedInstanceState.getParcelableArrayList<Review>(EXTRA_REVIEWS, Review::class.java)
+            } else {
+                reviews = savedInstanceState.getParcelableArrayList<Review>(EXTRA_REVIEWS)
+            }
             mReviewAdapter!!.add(reviews)
         } else {
             if (getIntent().hasExtra(EXTRA_MOVIE)) {
@@ -370,11 +391,12 @@ class MovieDetailActivity : AppCompatActivity(), VideoAdapter.Callbacks, ReviewA
     }
 
     override fun watch(video: Video, position: Int) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + video.key)))
+        startActivity(Intent(Intent.ACTION_VIEW,
+            ("http://www.youtube.com/watch?v=" + video.key).toUri()))
     }
 
     override fun read(review: Review, position: Int) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(review.url)))
+        startActivity(Intent(Intent.ACTION_VIEW, review.url?.toUri()))
     }
 
     companion object {
